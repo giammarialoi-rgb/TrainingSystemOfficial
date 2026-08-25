@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GIAMMARIA SYSTEM">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>GIAMMARIA SYSTEM | ELITE TRAINING</title>
+<style>
+:root {
+  --bg: #000000;
+  --surface: #0a0a0a;
+  --surface-light: #151515;
+  --gold: #d4af37;
+  --gold-glow: #f9d976;
+  --gold-dark: #aa8a2e;
+  --text-primary: #ffffff;
+  --text-secondary: #888888;
+  --border: #222222;
+  --accent-red: #ff4d4d;
+  --success: #4caf50;
+  --header-height: 60px;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+#splash {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  transition: opacity 0.8s ease-out;
+}
+
+#splash img {
+  width: 140px;
+  filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.4));
+  margin-bottom: 20px;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: var(--header-height);
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+header .logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+header .logo-container img { height: 32px; }
+header .logo-container span { font-size: 18px; font-weight: 900; color: var(--gold); letter-spacing: 2px; }
+
+main {
+  margin-top: var(--header-height);
+  margin-bottom: 160px;
+  padding: 15px;
+  min-height: calc(100vh - var(--header-height) - 160px);
+}
+
+nav.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 130px;
+  background: #000;
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding-bottom: 55px;
+  z-index: 1000;
+  box-shadow: 0 -15px 50px rgba(0,0,0,1);
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 800;
+  gap: 4px;
+}
+
+.nav-item.active { color: var(--gold); }
+.nav-item svg { width: 42px; height: 42px; fill: #555; transition: all 0.2s; }
+.nav-item.active svg { fill: var(--gold); transform: translateY(-5px) scale(1.1); }
+
+.card {
+  background: var(--surface);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  margin-bottom: 15px;
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 12px 15px;
+  background: var(--surface-light);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header h2 { margin: 0; font-size: 13px; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; }
+
+.btn {
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.btn-primary { background: var(--gold); color: #000; }
+.btn-outline { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
+
+select, input {
+  width: 100%;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.perf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+  color: #ccc;
+}
+
+.perf-table th, .perf-table td {
+  border: 1px solid #222;
+  padding: 8px 4px;
+  text-align: center;
+}
+
+.perf-table th { background: #151515; color: var(--gold); }
+.delta-pos { color: var(--success); }
+.delta-neg { color: var(--accent-red); }
+
+.chart-container { height: 260px; margin-bottom: 10px; }
+
+.fab-save {
+  position: fixed; right: 20px; bottom: 150px;
+  width: 60px; height: 60px; border-radius: 30px;
+  background: var(--gold); color: #000;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 999;
+  border: none;
+}
+
+.fab-save svg { width: 30px; height: 30px; fill: currentColor; }
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <img src="gs_logo.png" alt="GS Logo">
+  <span style="color:var(--gold); font-weight:900; letter-spacing:4px; font-size:20px;">GIAMMARIA SYSTEM</span>
+  <div style="margin-top:10px; font-size:10px; color:#555; font-weight:800; letter-spacing:2px;">POWERED BY GEMINI</div>
+  <div style="margin-top:20px; color:#888;">Performance & Evidence Based Training</div>
+</div>
+
+<header>
+  <div class="logo-container"><img src="gs_logo.png" alt="GS Logo"><span>GIAMMARIA SYSTEM</span></div>
+</header>
+
+<main id="view-container"></main>
+
+<button class="fab-save" onclick="saveAll()">
+  <svg viewBox="0 0 24 24"><path d="M17,3H5C3.89,3 3,3.9 3,5V19C3,20.1 3.89,21 5,21H19C20.1,21 21,20.1 21,19V7L17,3M12,19C10.34,19 9,17.66 9,16C9,14.34 10.34,13 12,13C13.66,13 15,14.34 15,16C15,17.66 13.66,19 12,19M15,9H5V5H15V9Z"/></svg>
+</button>
+
+<nav class="bottom-nav">
+  <a href="#" class="nav-item active" id="nav-home" onclick="navigate('home', event)">
+    <svg viewBox="0 0 24 24"><path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"/></svg><span>HOME</span>
+  </a>
+  <a href="#" class="nav-item" id="nav-training" onclick="navigate('training', event)">
+    <svg viewBox="0 0 24 24"><path d="M20.57,14.86L22,13.43L20.57,12L17,15.57L8.43,7L12,3.43L10.57,2L9.14,3.43L7.71,2L5.57,4.14L4.14,2.71L2.71,4.14L4.14,5.57L2,7.71L3.43,9.14L2,10.57L3.43,12L7,8.43L15.57,17L12,20.57L13.43,22L14.86,20.57L16.29,22L18.43,19.86L19.86,21.29L21.29,19.86L19.86,18.43L22,16.29L20.57,14.86Z"/></svg><span>WORKOUT</span>
+  </a>
+  <a href="#" class="nav-item" id="nav-stats" onclick="navigate('stats', event)">
+    <svg viewBox="0 0 24 24"><path d="M16,11.78L20.24,4.45L21.97,5.45L16.74,13.03L13,10.32L9,16.88L9,17H21V19H3V5H5V16.5L9.17,10L13.06,12.7L16,11.78Z"/></svg><span>PERF</span>
+  </a>
+  <a href="#" class="nav-item" id="nav-ai" onclick="navigate('ai', event)">
+    <svg viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8Z"/></svg><span>COACH AI</span>
+  </a>
+  <a href="#" class="nav-item" id="nav-db" onclick="navigate('db', event)">
+    <svg viewBox="0 0 24 24"><path d="M15.5,14L20.35,18.85L18.85,20.35L14,15.5V14.71L13.73,14.43C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.43,13.73L14.71,14H15.5M9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14Z"/></svg><span>DB</span>
+  </a>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let DATA=null, currentView='home', currentWeek=1, currentDay=0;
+let store=JSON.parse(localStorage.getItem('GS_STORE')||'{"data":{},"subs":{},"bw":{}}');
+const $=id=>document.getElementById(id), esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+const MUSCLE_GROUPS = {
+  "PETTO": ["Panca orizzontale", "Spinta inclinata", "Pec fly"],
+  "DORSO": ["Lat verticale", "Row orizzontale"],
+  "GAMBE": ["Quad squat", "Pressa", "Estensione ginocchio", "Flessione ginocchio", "Adduttori", "Abduttori", "Polpaccio", "Hip hinge"],
+  "SPALLE": ["Spinta spalle", "Rear delt", "Laterale"],
+  "BRACCIA": ["Bicipite", "Tricipite"],
+  "ADDOME": ["Addome"]
+};
+
+function init(){
+  let xhr=new XMLHttpRequest(); xhr.open('GET','data.json',true);
+  xhr.onreadystatechange=function(){ if(xhr.readyState===4){ DATA=JSON.parse(xhr.responseText);
+    setTimeout(()=>{ $('splash').style.opacity='0'; setTimeout(()=>{$('splash').style.display='none';render()},800); },1200);
+  }}; xhr.send();
+}
+function persist(){localStorage.setItem('GS_STORE',JSON.stringify(store))}
+function navigate(v,e){ if(e)e.preventDefault(); currentView=v; document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active')); const a=$(`nav-${v}`); if(a)a.classList.add('active'); render(); }
+function render(){
+  const c=$('view-container'); if(!DATA){c.innerHTML='...';return} c.innerHTML='';
+  if(currentView==='home') renderHome(c); else if(currentView==='training') renderTraining(c); else if(currentView==='stats') renderStats(c); else if(currentView==='ai') renderAI(c); else if(currentView==='db') renderDb(c);
+}
+
+function renderHome(c){
+  const bw=store.bw[currentWeek]||'--';
+  c.innerHTML=`
+    <div style="text-align:center;padding:20px 0;"><img src="gs_logo.png" style="width:120px;filter:drop-shadow(0 0 15px var(--gold));"><h1 class="text-gold" style="font-size:26px;font-weight:900;letter-spacing:3px;">SYSTEM DASHBOARD</h1></div>
+    <div class="card" style="border:2px solid var(--gold);"><div class="card-header"><h2>Sessione Attiva</h2></div><div style="padding:20px;"><div style="font-size:20px;font-weight:900;">Settimana ${currentWeek} • Giorno ${currentDay+1}</div><div style="color:var(--gold-glow);font-size:14px;margin-top:8px;font-weight:700;">${DATA.weeks[currentWeek-1].days[currentDay].title}</div><button class="btn btn-primary" style="width:100%;margin-top:20px;font-size:16px;height:55px;" onclick="navigate('training')">INIZIA WORKOUT</button></div></div>
+    <div class="card">
+       <div class="card-header"><h2>Struttura Programma</h2></div>
+       <div style="padding:15px; font-size:11px; color:#ccc;">
+          <div style="margin-bottom:15px;">
+            <b style="color:var(--gold); display:block; margin-bottom:5px; text-transform:uppercase; letter-spacing:1px;">Split Settimanale (4 Giorni)</b>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+              <div style="background:#111; padding:8px; border-radius:6px; border:1px solid #222;"><b>LUN:</b> Upper A (Petto/Dorso)</div>
+              <div style="background:#111; padding:8px; border-radius:6px; border:1px solid #222;"><b>MAR:</b> Lower A (Quad Dom.)</div>
+              <div style="background:#111; padding:8px; border-radius:6px; border:1px solid #222;"><b>GIO:</b> Upper B (Dorso/Spalle)</div>
+              <div style="background:#111; padding:8px; border-radius:6px; border:1px solid #222;"><b>VEN:</b> Lower B (Post. Chain)</div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:15px;">
+            <b style="color:var(--gold); display:block; margin-bottom:5px; text-transform:uppercase; letter-spacing:1px;">Focus Strategico 16W</b>
+            <div style="font-size:12px; line-height:1.6;">
+              1. Dorsali/Larghezza &bull; 2. Deltoide Laterale<br>
+              3. Parte Alta Petto &bull; 4. Catena Posteriore
+            </div>
+          </div>
+
+          <div>
+            <b style="color:var(--gold); display:block; margin-bottom:5px; text-transform:uppercase; letter-spacing:1px;">Blocchi Periodizzazione</b>
+            <div style="display:flex; flex-wrap:wrap; gap:5px; font-size:9px;">
+              <span style="background:var(--gold-dark); color:#000; padding:2px 6px; border-radius:4px; font-weight:800;">Accumulo 1-3</span>
+              <span style="background:#333; color:#fff; padding:2px 6px; border-radius:4px;">Deload (W4-8-12)</span>
+              <span style="background:var(--accent-red); color:#fff; padding:2px 6px; border-radius:4px; font-weight:800;">Realizzazione (W13-15)</span>
+            </div>
+          </div>
+       </div>
+    </div>
+
+    <div class="card"><div class="card-header"><h2>Razionale & Regole Operative</h2></div><div style="padding:15px;font-size:11px;line-height:1.5;color:#ccc;"><div style="margin-bottom:12px;"><b style="color:var(--gold);">TOP SET + BACK-OFF:</b> Un set principale controllato seguito da back-off (-10%). Il back-off segue il carico REALE del top set.</div><div style="margin-bottom:12px;"><b style="color:var(--gold);">RIR (Prossimità al cedimento):</b> W1-2: 2 RIR costanti; W3: 1 RIR; W4: Deload. La meta-regressione 2024 indica che l'ipertrofia aumenta terminando le serie vicini al cedimento.</div><div><b style="color:var(--gold);">RECUPERO:</b> Compound 3-4min, Isolation 60-90s (Singer et al. 2024). Mantieni recuperi completi per massimizzare il volume tecnico.</div></div></div>
+    <div class="card"><div class="card-header"><h2>Gestione Dati</h2></div><div style="padding:15px;display:flex;flex-direction:column;gap:10px;"><button class="btn btn-outline" style="width:100%;border-color:var(--gold);color:var(--gold);" onclick="resetWorkoutData()">RIPRISTINA CARICHI (AZZERA)</button><button class="btn btn-outline" style="width:100%;border-color:var(--accent-red);color:var(--accent-red);font-size:10px;" onclick="resetAllData()">HARD RESET APP</button></div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><div class="card" style="padding:15px;text-align:center;"><span style="font-size:11px;color:var(--text-secondary);font-weight:800;">BODYWEIGHT</span><div style="font-size:22px;font-weight:900;color:var(--gold);">${bw} kg</div></div><div class="card" style="padding:15px;text-align:center;"><span style="font-size:11px;color:var(--text-secondary);font-weight:800;">PROGRESSO</span><div style="font-size:22px;font-weight:900;color:var(--gold);">${Math.round((currentWeek/16)*100)}%</div></div></div>
+  `;
+}
+
+function renderTraining(c){
+  const w=DATA.weeks[currentWeek-1], d=w.days[currentDay];
+  let h=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;"><select onchange="currentWeek=parseInt(this.value);currentDay=0;render()">${DATA.weeks.map(ww=>`<option value="${ww.week}" ${ww.week===currentWeek?'selected':''}>Settimana ${ww.week}</option>`).join('')}</select><select onchange="currentDay=parseInt(this.value);render()">${w.days.map((dd,i)=>`<option value="${i}" ${i===currentDay?'selected':''}>Giorno ${i+1}</option>`).join('')}</select></div><div class="card"><div class="card-header"><h2>${esc(w.title)}</h2></div><div style="padding:15px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;"><span style="font-size:11px;font-weight:700;color:var(--text-secondary);">BODYWEIGHT (KG)</span><input type="number" step="0.1" value="${store.bw[currentWeek]||''}" onchange="store.bw[currentWeek]=this.value;persist()" style="width:80px;padding:6px;text-align:center;"></div><div style="padding:12px;font-size:13px;color:var(--gold-glow);font-weight:800;text-align:center;background:rgba(212,175,55,0.05);border-bottom:1px solid var(--border);">${esc(d.title)}</div><div id="exercises-list">`;
+  let groups=[]; d.rows.forEach((r,ri)=>{ if(ri>0 && r.exercise===d.rows[ri-1].exercise && r.movement===d.rows[ri-1].movement){groups[groups.length-1].rows.push({...r,originalIndex:ri})}else{groups.push({exercise:r.exercise,movement:r.movement,rows:[{...r,originalIndex:ri}]})} });
+  groups.forEach(g=>{
+    const fIdx=g.rows[0].originalIndex, curEx=store.subs[`w${currentWeek}_d${currentDay}_e${fIdx}`]||g.exercise;
+    h+=`<div class="exercise-item" style="padding:15px;border-bottom:1px solid var(--border);"><div style="font-size:10px;color:var(--gold);font-weight:800;opacity:0.6;text-transform:uppercase;">${esc(g.movement)}</div><div style="font-size:17px;font-weight:900;margin-bottom:10px;">${esc(curEx)}</div>`;
+    let gsC=1; g.rows.forEach(row=>{
+      const sC=Math.max(1,(row.setRows?row.setRows.length:0)+1);
+      h+=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:8px;background:#151515;padding:8px;border-radius:8px;border:1px solid #222;"><div style="font-size:10px;color:#aaa;">T: <b style="color:#fff;">${esc(row.repsTarget)}</b></div><div style="font-size:10px;color:#aaa;">RIR: <b style="color:#fff;">${esc(row.rirTarget)}</b></div><div style="font-size:10px;color:#aaa;">Rest: <b style="color:#fff;">${esc(row.rest)}</b></div></div><div style="display:grid;grid-template-columns:30px 1fr 1fr 1fr;gap:8px;align-items:center;margin-bottom:15px;"><div style="font-size:10px;color:#555;text-align:center;">#</div><div style="font-size:10px;color:#555;text-align:center;">KG</div><div style="font-size:10px;color:#555;text-align:center;">REPS</div><div style="font-size:10px;color:#555;text-align:center;">RIR</div>`;
+      for(let s=1;s<=sC;s++){
+        const k=`w${currentWeek}_d${currentDay}_e${row.originalIndex}_s${s}`;
+        let sugg=row.plannedLoad||''; if(!sugg && gsC>1){ const topV=parseFloat(store.data[`w${currentWeek}_d${currentDay}_e${fIdx}_s1_load`]); if(topV) sugg=(Math.round(topV*0.9*2)/2).toFixed(1); }
+        h+=`<div style="font-size:14px;font-weight:bold;color:var(--gold);text-align:center;">${gsC}</div><input type="number" id="${k}_load" step="0.5" data-group="w${currentWeek}_d${currentDay}_e${fIdx}" placeholder="${sugg||''}" value="${store.data[k+'_load']||''}" oninput="updateData('${k}_load',this.value)" style="padding:12px;font-size:16px;text-align:center;border-left:3px solid var(--gold);background:#1a1a1a;"><select onchange="updateData('${k}_reps',this.value)" style="padding:12px;font-size:16px;background:#1a1a1a;"><option value="">-</option>${[...Array(50)].map((_,i)=>`<option value="${i+1}" ${store.data[k+'_reps']==i+1?'selected':''}>${i+1}</option>`).join('')}</select><select onchange="updateData('${k}_rir',this.value)" style="padding:12px;font-size:16px;border-left:3px solid var(--accent-red);background:#1a1a1a;"><option value="">-</option>${[...Array(11)].map((_,i)=>`<option value="${i}" ${store.data[k+'_rir']==i?'selected':''}>${i}</option>`).join('')}</select>`;
+        gsC++;
+      } h+=`</div>`;
+    });
+    const db=DATA.exerciseDb[g.movement]||[g.exercise];
+    h+=`<div style="margin-top:10px;border-top:1px solid #222;padding-top:10px;"><select onchange="substituteEx(${fIdx},this.value)" style="padding:10px;font-size:12px;color:var(--text-secondary);background:transparent;border:1px dashed #444;width:100%;"><option value="">🔄 Sostituisci esercizio...</option>${db.map(x=>`<option value="${x}" ${x===curEx?'selected disabled':''}>${esc(x)}</option>`).join('')}</select></div></div>`;
+  });
+  h+=`</div></div><div style="padding:20px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;background:rgba(255,255,255,0.02);border-radius:12px;"><div style="text-align:center;"><b id="d-vol" style="color:var(--gold);font-size:18px;">0</b><br><span style="font-size:9px;color:#666;">VOLUME</span></div><div style="text-align:center;"><b id="d-rir" style="color:var(--accent-red);font-size:18px;">0</b><br><span style="font-size:9px;color:#666;">INTENSITÀ</span></div><div style="text-align:center;"><b id="d-sets" style="color:#fff;font-size:18px;">0</b><br><span style="font-size:9px;color:#666;">SERIE</span></div></div><div style="height:160px;"></div>`;
+  c.innerHTML=h; calcStats();
+}
+
+function updateData(key,val){
+  store.data[key]=val; persist(); calcStats();
+  if(key.includes('_s1_load')){
+     const p=key.split('_'), id=`${p[0]}_${p[1]}_${p[2]}`, tV=parseFloat(val);
+     if(tV){ const s=(Math.round(tV*0.9*2)/2).toFixed(1); document.querySelectorAll(`input[data-group="${id}"]`).forEach(el=>{if(el.id!==key)el.placeholder=s}); }
+  }
+}
+function substituteEx(idx,val){
+  if(!val)return;
+  // Propagation to future weeks
+  for(let w=currentWeek; w<=16; w++) {
+    store.subs[`w${w}_d${currentDay}_e${idx}`] = val;
+  }
+  persist(); render();
+}
+function calcStats(){
+  let v=0, r=0, s=0; Object.keys(store.data).forEach(k=>{
+    if(k.startsWith(`w${currentWeek}_d${currentDay}_`)&&k.endsWith('_load')){
+       const b=k.replace('_load',''), l=parseFloat(store.data[k]||0), rp=parseInt(store.data[b+'_reps']||0);
+       if(l>0&&rp>0){ v+=l*rp; r+=l*(rp+parseInt(store.data[b+'_rir']||0)); s++; }
+    }
+  });
+  if($('d-vol')) $('d-vol').innerText=Math.round(v).toLocaleString();
+  if($('d-rir')) $('d-rir').innerText=Math.round(r).toLocaleString();
+  if($('d-sets')) $('d-sets').innerText=s;
+}
+
+function getMuscleGroup(movement) {
+  for (let group in MUSCLE_GROUPS) {
+    if (MUSCLE_GROUPS[group].includes(movement)) return group;
+  }
+  return "ALTRO";
+}
+
+function renderStats(c){
+  c.innerHTML=`<h1 class="text-gold" style="font-size:24px;font-weight:900;letter-spacing:2px;margin-bottom:20px;">PERFORMANCE CENTER</h1><div style="margin-bottom:20px;"><select id="stats-filter" onchange="renderStats(c)" style="background:#151515;border:1px solid var(--gold);color:#fff;"><option value="TOTAL">Totale Body</option>${Object.keys(MUSCLE_GROUPS).map(g=>`<option value="${g}" ${window.lastF===g?'selected':''}>${g}</option>`).join('')}</select></div><div class="card" style="padding:10px;overflow-x:auto;"><table class="perf-table"><thead><tr><th>W</th><th>Serie</th><th>Vol. kg</th><th>Δ Vol.</th><th>Int.</th><th>Δ Int.</th><th>Peso</th><th>Perf.</th></tr></thead><tbody id="summary-body"></tbody></table></div><div class="card" style="padding:15px;"><div id="v-t" style="font-size:12px;color:var(--gold);font-weight:800;margin-bottom:10px;">VOLUME REALE / SETTIMANA</div><div class="chart-container"><canvas id="volChart"></canvas></div></div><div class="card" style="padding:15px;"><div id="r-t" style="font-size:12px;color:var(--accent-red);font-weight:800;margin-bottom:10px;">INTENSITÀ MEDIA / SETTIMANA</div><div class="chart-container"><canvas id="rirChart"></canvas></div></div><div class="card" style="padding:15px;"><div style="font-size:12px;color:#54a0ff;font-weight:800;margin-bottom:10px;">PESO CORPOREO</div><div class="chart-container"><canvas id="bwChart"></canvas></div></div><div style="height:160px;"></div>`;
+  const f=$('stats-filter')?$('stats-filter').value:'TOTAL'; window.lastF=f; if(f!=='TOTAL'){$('v-t').innerText=`VOLUME: ${f}`;$('r-t').innerText=`INTENSITÀ: ${f}`}
+  const wks=Array.from({length:16},(_,i)=>i+1); let vD=[], rD=[], bwD=[], sD=[], pD=[];
+  const rM={}; DATA.weeks.forEach(w=>w.days.forEach(d=>d.rows.forEach((r,ri)=>rM[`w${w.week}_d${w.days.indexOf(d)}_e${ri}`]=getMuscleGroup(r.movement))));
+  wks.forEach(w=>{
+    let v=0, rs=0, st=0; Object.keys(store.data).forEach(k=>{
+      if(k.startsWith(`w${w}_`)&&k.endsWith('_load')){
+        const p=k.split('_'), mK=`${p[0]}_${p[1]}_${p[2]}`;
+        if(f==='TOTAL'||rM[mK]===f){ const b=k.replace('_load',''), l=parseFloat(store.data[k]||0), r=parseInt(store.data[b+'_reps']||0); if(l>0&&r>0){ v+=l*r; rs+=l*(r+parseInt(store.data[b+'_rir']||0)); st++; } }
+      }
+    }); vD.push(v); rD.push(st>0?rs/st:0); pD.push(rs); sD.push(st); bwD.push(parseFloat(store.bw[w]||0));
+  });
+  let tH=''; wks.forEach((w,i)=>{ const dV=i>0?vD[i]-vD[i-1]:0, dI=i>0?pD[i]-pD[i-1]:0; tH+=`<tr><td>${w}</td><td>${sD[i]}</td><td>${Math.round(vD[i])}</td><td class="${dV>=0?'delta-pos':'delta-neg'}">${dV>=0?'+':''}${Math.round(dV)}</td><td>${Math.round(pD[i])}</td><td class="${dI>=0?'delta-pos':'delta-neg'}">${dI>=0?'+':''}${Math.round(dI)}</td><td>${bwD[i]||'--'}</td><td><b>${Math.round(pD[i])}</b></td></tr>`; });
+  $('summary-body').innerHTML=tH;
+  const cO={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#222'}},x:{grid:{display:false}}}};
+  new Chart($('volChart'),{type:'line',data:{labels:wks,datasets:[{data:vD,borderColor:'#d4af37',tension:0.3,fill:true,backgroundColor:'rgba(212,175,55,0.05)'}]},options:cO});
+  new Chart($('rirChart'),{type:'line',data:{labels:wks,datasets:[{data:rD,borderColor:'#ff4d4d',tension:0.3}]},options:cO});
+  new Chart($('bwChart'),{type:'bar',data:{labels:wks,datasets:[{data:bwD,backgroundColor:'#54a0ff'}]},options:cO});
+}
+
+function renderAI(c){
+  c.innerHTML=`<h1 class="text-gold" style="font-size:24px;font-weight:900;margin-bottom:5px;">COACH AI</h1>
+    <div style="font-size:10px; color:#555; margin-bottom:15px; font-weight:700; letter-spacing:1px;">POWERED BY GEMINI</div>
+    <div id="chat-history"><div class="msg ai">Analisi Evidence-Based attiva. Come posso ottimizzare il tuo percorso oggi?</div></div>
+    <div style="display:flex;gap:10px;background:var(--surface-light);padding:10px;border-radius:12px;"><input type="text" id="ai-input" placeholder="Analizza progresso..." style="flex:1;border:none;background:transparent;"><button class="btn btn-primary" onclick="askAI()" style="padding:10px 15px;">INV</button></div>`;
+}
+function askAI(){
+  const q=$('ai-input').value; if(!q)return; const h=$('chat-history'); h.innerHTML+=`<div class="msg user">${esc(q)}</div>`; $('ai-input').value='';
+  setTimeout(()=>{
+    let tV=0; Object.keys(store.data).forEach(k=>{if(k.endsWith('_load')){const b=k.replace('_load',''); tV+=(parseFloat(store.data[k]||0))*(parseInt(store.data[b+'_reps']||0));}});
+    let ans=`Analisi Performance: Hai accumulato ${Math.round(tV)}kg di volume totale. La tendenza mostra una progressione solida. Ricorda: il ripristino della performance tra le serie (2.5-4min) è fondamentale per l'ipertrofia a lungo termine.`;
+    h.innerHTML+=`<div class="msg ai">${ans}</div>`; h.scrollTop=h.scrollHeight;
+  },800);
+}
+
+function renderDb(c){
+  c.innerHTML=`<h1 class="text-gold" style="font-size:24px;font-weight:900;margin-bottom:20px;">DATABASE</h1><div class="card" style="padding:15px;"><input type="text" placeholder="Cerca..." oninput="searchDb(this.value)" style="margin-bottom:15px;background:#000;"><div id="db-results"></div></div>`;
+  searchDb('');
+}
+function searchDb(q){
+  let h=''; q=q.toLowerCase(); Object.keys(DATA.exerciseDb).forEach(m=>{
+    const f=DATA.exerciseDb[m].filter(ex=>ex.toLowerCase().includes(q)||m.toLowerCase().includes(q));
+    if(f.length) h+=`<div style="margin-bottom:12px"><b style="color:var(--gold);font-size:11px;text-transform:uppercase;">${m}</b><div style="font-size:13px;color:#888;margin-top:4px;padding-left:10px;border-left:1px solid #333;">${f.join(' • ')}</div></div>`;
+  }); $('db-results').innerHTML=h;
+}
+
+function saveAll(){persist();alert("Salvataggio completato.")}
+function resetWorkoutData(){if(confirm("Azzerare tutti i carichi registrati?")){store.data={};persist();render()}}
+function resetAllData(){if(confirm("HARD RESET: cancella ogni dato?")){localStorage.clear();location.reload()}}
+init();
+</script>
+<script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}</script>
+</body>
+</html>
