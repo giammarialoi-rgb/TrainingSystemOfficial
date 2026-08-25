@@ -1,0 +1,107 @@
+name: Build Giammaria System iOS
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Create Capacitor project
+        shell: bash
+        run: |
+          set -e
+
+          mkdir -p www
+
+          cp index.html www/index.html
+          cp data.json www/data.json
+          cp gs_logo.png www/gs_logo.png
+          cp icon-192.png www/icon-192.png
+          cp icon-512.png www/icon-512.png
+
+          if [ -f manifest.webmanifest ]; then
+            cp manifest.webmanifest www/manifest.webmanifest
+          fi
+
+          if [ -f sw.js ]; then
+            cp sw.js www/sw.js
+          fi
+
+          cat > package.json <<'EOF'
+          {
+            "name": "giammaria-system-ios",
+            "version": "1.0.0",
+            "private": true,
+            "dependencies": {
+              "@capacitor/core": "^7.4.0"
+            },
+            "devDependencies": {
+              "@capacitor/cli": "^7.4.0"
+            }
+          }
+          EOF
+
+          npm install
+          npm install @capacitor/ios@^7.4.0
+
+          cat > capacitor.config.json <<'EOF'
+          {
+            "appId": "com.giammarialoi.system",
+            "appName": "Giammaria System",
+            "webDir": "www",
+            "bundledWebRuntime": false
+          }
+          EOF
+
+          npx cap add ios
+          npx cap sync ios
+
+      - name: Build iOS
+        shell: bash
+        run: |
+          set -e
+
+          xcodebuild \
+            -workspace ios/App/App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath build/GiammariaSystem.xcarchive \
+            archive \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO
+
+      - name: Create unsigned IPA
+        shell: bash
+        run: |
+          set -e
+
+          mkdir -p build/Payload
+
+          cp -R \
+            build/GiammariaSystem.xcarchive/Products/Applications/App.app \
+            build/Payload/App.app
+
+          cd build
+
+          zip -qry GiammariaSystem-unsigned.ipa Payload
+
+      - name: Upload iOS build
+        uses: actions/upload-artifact@v4
+        with:
+          name: Giammaria-System-iOS
+          path: |
+            build/GiammariaSystem-unsigned.ipa
+            build/GiammariaSystem.xcarchive
